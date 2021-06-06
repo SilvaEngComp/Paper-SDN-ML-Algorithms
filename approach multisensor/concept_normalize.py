@@ -9,21 +9,13 @@ import csv
 
 import pandas as pd
 import numpy as np
+from timeit import default_timer as timer
 
 from sklearn.preprocessing import StandardScaler
 from skmultiflow.drift_detection import PageHinkley
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
-
-def create_dataset(X, y, time_steps=1):
-    Xs, ys = [], []
-    for i in range(len(X) - time_steps):
-        print('modeling to keras ',round((i/(len(X) - time_steps))*100,2), ('%'))
-        v = X.iloc[i: (i+time_steps), 0:2].to_numpy()
-        Xs.append(v)
-        ys.append(y.iloc[i+time_steps])
-    return np.array(Xs), np.array(ys)
 
 def saveFile(dataset, name='dataset'):
     print('saving: ',name, '......')
@@ -39,8 +31,8 @@ def saveFile(dataset, name='dataset'):
 def create_window(X, time_steps=5):
     Xs = []
     for i in range(len(X) - time_steps):
-        print('creating concept window ',(round(i/(len(X) - time_steps))*100,2), ('%'))
-        v = X.iloc[i: (i+time_steps), 1].to_numpy()
+        print('creating concept window ',round((i/(len(X) - time_steps))*100,2), ('%'))
+        v = X.iloc[i: (i+time_steps), 2].to_numpy()
         Xs.append(v)                     
     return np.array(Xs)
 
@@ -63,8 +55,8 @@ def getConceptDrifft(data_stream, dataset):
         init = i*WINDOW  
 
         if(CHANGE):   
-            dataset.iloc[init: (init+WINDOW), 3] =  DELAY
-            dataset.iloc[init: (init+WINDOW),2] =  CHANGE
+            dataset.iloc[init: (init+WINDOW), 4] =  DELAY
+            dataset.iloc[init: (init+WINDOW),3] =  CHANGE
             CHANGE = 0
             lastconcept = i
 
@@ -72,7 +64,8 @@ def getConceptDrifft(data_stream, dataset):
     
 
         
-        
+start = timer()
+    
 #carregando datasets
 print('loading dataset')
 test  = pd.read_csv('sdn_test.csv', delimiter=",")
@@ -125,6 +118,8 @@ test['delay'] = scaler4.transform(test[['delay']])
 #salvando datasets normalizados
 saveFile(train, name='sdn_train_normalized.csv')
 saveFile(test, name='sdn_test_normalized.csv')
+
+print('duração: ', timer() - start) 
 
 
 

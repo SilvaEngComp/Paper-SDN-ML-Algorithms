@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
-
+from timeit import default_timer as timer
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
@@ -27,7 +27,8 @@ def create_dataset(X, y, time_steps=1):
     return np.array(Xs), np.array(ys)
     Xs, ys = [], []
     for i in range(len(X) - time_steps):
-        print('modeling to keras ',round((i/(len(X) - time_steps))*100,2), ('%'))
+        print('modeling to keras ',round((i/(len(X) - time_steps))*100,2), ('%'), end='')
+        print(' ', timer() - start, ' seconds')
         v = X.iloc[i: (i+time_steps), 0:2].to_numpy()
         Xs.append(v)
         ys.append(y.iloc[i+time_steps])
@@ -35,7 +36,7 @@ def create_dataset(X, y, time_steps=1):
 
 
     
-
+start = timer()
 #carregando datasets
 print('loading dataset')
 test  = pd.read_csv('../sdn_test_normalized.csv', delimiter=",")
@@ -89,7 +90,7 @@ history = model.fit(
 #salvando modelo
 print('Saving Model')
 model.save('models/m2')
-
+print('duração: ', timer() - start) 
 
 fig1 = plt.figure()
 ax1 = fig1.add_subplot(1,1,1)
