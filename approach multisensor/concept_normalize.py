@@ -31,6 +31,7 @@ def saveFile(dataset, name='dataset'):
 def create_window(X, time_steps=5):
     Xs = []
     for i in range(len(X) - time_steps):
+        print("\033[H\033[J") 
         print('creating concept window ',round((i/(len(X) - time_steps))*100,2), ('%'))
         v = X.iloc[i: (i+time_steps), 2].to_numpy()
         Xs.append(v)                     
@@ -68,8 +69,8 @@ start = timer()
     
 #carregando datasets
 print('loading dataset')
-test  = pd.read_csv('sdn_test.csv', delimiter=",")
-train  = pd.read_csv('sdn_train.csv', delimiter=",")
+test  = pd.read_csv('datasets/sem_concept_drift/sdn_test.csv', delimiter=",")
+train  = pd.read_csv('datasets/sem_concept_drift/sdn_train.csv', delimiter=",")
 WINDOW = 20
 print(train)
 
@@ -86,8 +87,8 @@ test= getConceptDrifft(data_stream_test, test)
 
 
 #salvando datasets normalizados
-saveFile(train, name='sdn_train_unnormalized.csv')
-saveFile(test, name='sdn_test_unnormalized.csv')
+saveFile(train, name='datasets/com_concept_drift/sdn_train_unormalized.csv')
+saveFile(test, name='datasets/com_concept_drift/sdn_test_unormalized.csv')
 
 #separando em treino e teste
 
@@ -116,8 +117,8 @@ test['delay'] = scaler4.transform(test[['delay']])
 
 
 #salvando datasets normalizados
-saveFile(train, name='sdn_train_normalized.csv')
-saveFile(test, name='sdn_test_normalized.csv')
+saveFile(train, name='datasets/com_concept_drift/sdn_train_normalized.csv')
+saveFile(test, name='datasets/com_concept_drift/sdn_test_normalized.csv')
 
 print('duração: ', timer() - start) 
 

@@ -17,6 +17,7 @@ def makingTimestamp(dataset):
     for i in np.arange(dataset['date'].shape[0]):
         x = dataset.date.iloc[i].split('.')
         dataset.date.iloc[i] = x[0]
+        print("\033[H\033[J") 
         print('making timestamp ',round((i/dataset['date'].shape[0])*100,2), ('%'))
     dataset.date= pd.to_datetime(dataset.date, infer_datetime_format=True)
     return dataset
@@ -49,15 +50,15 @@ def saveFile(dataset, name='dataset'):
 #carregando dataset da simulação
 print('loading dataset')
 dataset = pd.read_csv('../data.txt', delimiter=" ")
-# subset  = dataset[(dataset["moteid"] >=1)]
-subset  = dataset[(dataset["moteid"] <=3)]
+subset  = dataset[(dataset["moteid"] >=2)]
+subset  = subset[(subset["moteid"] <=6)]
 subset = subset[(subset["temperature"] >=15)]
-subset = subset[(subset["temperature"] <=30)]
+subset = subset[(subset["temperature"] <=26)]
 
 #separa os datasets
 print('separing dataset')
-test  = subset[(subset["moteid"] <=1)]
-train  = subset[subset["moteid"] > 1]
+test  = subset[(subset["moteid"] <=3)]
+train  = subset[subset["moteid"] > 3]
 
 
 #preprocessando
@@ -71,7 +72,7 @@ print('filtring delay')
 #test_ML = test_ML[test_ML['delay'] < 20000 ]
 
 #salvando datasets preprocessados
-saveFile(train_ML, name='sdn_train.csv')
-saveFile(test_ML, name='sdn_test.csv')
+saveFile(train_ML, name='datasets/sem_concept_drift/sdn_train.csv')
+saveFile(test_ML, name='datasets/sem_concept_drift/sdn_test.csv')
 
 
