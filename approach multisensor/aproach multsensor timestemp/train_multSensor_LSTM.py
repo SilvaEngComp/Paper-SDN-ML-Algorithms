@@ -18,17 +18,29 @@ from timeit import default_timer as timer
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 
+def create_dataset(X, y, time_steps=1):
+    Xs, ys = [], []    
+    for i in range(len(X) - time_steps):
+        print('modeling to keras ',round((i/(len(X) - time_steps))*100,2), ('%'), end='')
+        print(' ', round(timer() - start), ' seconds')
+        v = X.iloc[i: (i+time_steps), 2:4].to_numpy()
+        Xs.append(v)
+        ys.append(y.iloc[i+time_steps])
+    return np.array(Xs), np.array(ys)
+
 
     
 start = timer()
 #carregando datasets
 print('loading dataset')
-X_train  = pd.read_csv('X_train.csv', delimiter=",")
-Y_train  = pd.read_csv('Y_train.csv', delimiter=",")
-X_test  = pd.read_csv('X_test.csv', delimiter=",")
+test  = pd.read_csv('../sdn_test_normalized.csv', delimiter=",")
+train  = pd.read_csv('../sdn_train_normalized.csv', delimiter=",")
 
-Y_test  = pd.read_csv('Y_test.csv', delimiter=",")
+print('creating window')
+TIME_STEPS = 1
 
+X_train,Y_train = create_dataset(train, train.delay, time_steps=TIME_STEPS)
+X_test,Y_test = create_dataset(test, test.delay, time_steps=TIME_STEPS)
 
 print(X_train.shape)
 #configurando rede para treinamento

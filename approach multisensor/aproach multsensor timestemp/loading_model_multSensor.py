@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
+from timeit import default_timer as timer
 
 def create_dataset(X, y, time_steps=1):
     Xs, ys = [], []
@@ -20,20 +21,18 @@ def create_dataset(X, y, time_steps=1):
         ys.append(y.iloc[i+time_steps])
     return np.array(Xs), np.array(ys)
 
-
-
+    
+start = timer()
 #carregando datasets
 print('loading dataset')
+X_train  = pd.read_csv('X_train.csv', delimiter=",")
+Y_train  = pd.read_csv('Y_train.csv', delimiter=",")
+X_test  = pd.read_csv('X_test.csv', delimiter=",")
+
+Y_test  = pd.read_csv('Y_test.csv', delimiter=",")
+
 test  = pd.read_csv('../sdn_test_normalized.csv', delimiter=",")
 train  = pd.read_csv('../sdn_train_normalized.csv', delimiter=",")
-
-TIME_STEPS = 1
-
-X_train,Y_train = create_dataset(train, train.delay, time_steps=TIME_STEPS)
-X_test,Y_test = create_dataset(test, test.delay, time_steps=TIME_STEPS)
-
-
-
 
 
 #desnormalizing
