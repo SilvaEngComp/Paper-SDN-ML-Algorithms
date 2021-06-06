@@ -21,19 +21,17 @@ def makingTimestamp(dataset):
     dataset.date= pd.to_datetime(dataset.date, infer_datetime_format=True)
     return dataset
 
-def preprocessing(WINDOW, dataset):
+def preprocessing(dataset):
     MyLIst = []
     dataset = makingTimestamp(dataset)
     for i in np.arange((dataset.shape[0])):
         print('preprocessing ',round((i/dataset.shape[0])*100, 2), ('%'))
         temperature = dataset.iloc[i, 4]
-        if abs(temperature) < 26:
-            label = 0
-            dalay = 0
-            print(dataset.iloc[i, 0], ' type =',type(dataset.iloc[i, 0]) )
-            timestamp = dataset.iloc[i, 0]
+        label = 0
+        dalay = 0
+        timestamp = dataset.iloc[i, 0]
 
-            MyLIst.append([timestamp,time.mktime(timestamp.timetuple()), temperature,label, dalay ])
+        MyLIst.append([timestamp,time.mktime(timestamp.timetuple()), temperature,label, dalay ])
     cols = ['timestamp', 'seconds', 'temperature','label' ,'delay' ]
     return pd.DataFrame(MyLIst, columns = cols)
 
@@ -51,20 +49,21 @@ def saveFile(dataset, name='dataset'):
 #carregando dataset da simulação
 print('loading dataset')
 dataset = pd.read_csv('../data.txt', delimiter=" ")
-subset  = dataset[(dataset["moteid"] >=19)]
-subset  = subset[(subset["moteid"] <=22)]
+# subset  = dataset[(dataset["moteid"] >=1)]
+subset  = dataset[(dataset["moteid"] <=3)]
+subset = subset[(subset["temperature"] >=15)]
+subset = subset[(subset["temperature"] <=30)]
 
 #separa os datasets
 print('separing dataset')
-test  = dataset[(dataset["moteid"] <=20)]
-train  = dataset[dataset["moteid"] > 20]
+test  = subset[(subset["moteid"] <=1)]
+train  = subset[subset["moteid"] > 1]
 
 
 #preprocessando
-WINDOW = 20
 print('init preprocessing')
-train_ML = preprocessing(WINDOW, train)
-test_ML = preprocessing(WINDOW, test)
+train_ML = preprocessing(train)
+test_ML = preprocessing(test)
 
 #limitando delay
 print('filtring delay')
