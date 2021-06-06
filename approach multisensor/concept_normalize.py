@@ -57,6 +57,7 @@ def getConceptDrifft(data_stream, dataset):
 
         if(CHANGE):   
             dataset.iloc[init: (init+WINDOW), 4] =  DELAY
+            print('alterou de zero para', DELAY)
             dataset.iloc[init: (init+WINDOW),3] =  CHANGE
             CHANGE = 0
             lastconcept = i
