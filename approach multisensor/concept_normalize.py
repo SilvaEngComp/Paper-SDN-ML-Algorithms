@@ -38,7 +38,7 @@ def create_window(X, time_steps=5):
     return np.array(Xs)
 
 def getConceptDrifft(data_stream, dataset):
-    ph = PageHinkley()
+    ph = PageHinkley(20)
 
     # Adding stream elements to the PageHinkley drift detector and verifying if drift occurred
     CHANGE = 0
@@ -71,13 +71,12 @@ start = timer()
 print('loading dataset')
 test  = pd.read_csv('datasets/sem_concept_drift/sdn_test.csv', delimiter=",")
 train  = pd.read_csv('datasets/sem_concept_drift/sdn_train.csv', delimiter=",")
-WINDOW = 20
-print(train)
+WINDOW = 50
+
 
 #gerando concept drift train
 print('loading train concept drift')
 data_stream_train = create_window(train, time_steps=WINDOW)
-print(data_stream_train)
 train= getConceptDrifft(data_stream_train, train)
 
 #gerando concept drift test

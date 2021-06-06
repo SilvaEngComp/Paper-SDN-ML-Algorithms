@@ -10,6 +10,7 @@ import csv
 import pandas as pd
 import numpy as np
 import time
+from IPython.display import clear_output
 
 def makingTimestamp(dataset):
     dataset.date = dataset.date+ ' ' +dataset.time
@@ -17,7 +18,7 @@ def makingTimestamp(dataset):
     for i in np.arange(dataset['date'].shape[0]):
         x = dataset.date.iloc[i].split('.')
         dataset.date.iloc[i] = x[0]
-        print("\033[H\033[J") 
+        clear_output(wait=True)
         print('making timestamp ',round((i/dataset['date'].shape[0])*100,2), ('%'))
     dataset.date= pd.to_datetime(dataset.date, infer_datetime_format=True)
     return dataset
