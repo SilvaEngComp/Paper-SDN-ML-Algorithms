@@ -18,35 +18,17 @@ from timeit import default_timer as timer
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 
-def create_dataset(X, y, time_steps=1):
-    Xs, ys = [], []
-    for i in range(len(X) - time_steps):
-        v = X.iloc[i: (i+time_steps), 1:3].to_numpy()
-        Xs.append(v)
-        ys.append(y.iloc[i+time_steps])
-    return np.array(Xs), np.array(ys)
-    Xs, ys = [], []
-    for i in range(len(X) - time_steps):
-        print('modeling to keras ',round((i/(len(X) - time_steps))*100,2), ('%'), end='')
-        print(' ', timer() - start, ' seconds')
-        v = X.iloc[i: (i+time_steps), 0:2].to_numpy()
-        Xs.append(v)
-        ys.append(y.iloc[i+time_steps])
-    return np.array(Xs), np.array(ys)
-
 
     
 start = timer()
 #carregando datasets
 print('loading dataset')
-test  = pd.read_csv('../sdn_test_normalized.csv', delimiter=",")
-train  = pd.read_csv('../sdn_train_normalized.csv', delimiter=",")
+X_train  = pd.read_csv('X_train.csv', delimiter=",")
+Y_train  = pd.read_csv('Y_train.csv', delimiter=",")
+X_test  = pd.read_csv('X_test.csv', delimiter=",")
 
-print('creating window')
-TIME_STEPS = 5
+Y_test  = pd.read_csv('Y_test.csv', delimiter=",")
 
-X_train,Y_train = create_dataset(train, train.delay, time_steps=TIME_STEPS)
-X_test,Y_test = create_dataset(test, test.delay, time_steps=TIME_STEPS)
 
 print(X_train.shape)
 #configurando rede para treinamento
@@ -65,7 +47,7 @@ model.add(
 #model.add(keras.layers.Dense(units=40))
 #model.add(keras.layers.Dense(units=40))
 model.add(keras.layers.Dropout(rate=0.2))
-model.add(keras.layers.Dense(units=1))
+model.add(keras.layers.Dense(units=20))
 
 loss ="mse"
 optim = tf.keras.optimizers.Adam(
