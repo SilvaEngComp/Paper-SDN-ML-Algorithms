@@ -139,12 +139,14 @@ def LSTMfit(window):
 
 def predict(test):
     
-    model = keras.models.load_model('lstm.h5')
+    model = keras.models.load_model('../multisensor delta/models/lstm')
     test_norm = normalizing(test)
     X_test,Y_test = create_dataset(test_norm, test_norm.delay) 
-    y_pred = model.predict(X_test)
-    y_test_inv, y_pred_inv = unormalizing(test, Y_test, y_pred)
     
+    y_pred = model.predict(X_test)
+    
+    y_test_inv, y_pred_inv = unormalizing(test, Y_test, y_pred)
+   
     size = np.min([y_pred_inv.shape[0],y_test_inv.shape[0] ])
     rmse =  mean_squared_error(y_test_inv[0:size], y_pred_inv[0:size], squared=False)
     mae =  mean_absolute_error(y_test_inv[0:size], y_pred_inv[0:size])
@@ -157,7 +159,8 @@ def predict(test):
     print('Explained Variance Score: ',evs)
     return y_pred
 
-
+test = pd.read_csv('../datasets/dataset_test_02_07.csv', delimiter=",")
+predict(test.iloc[0:50,1:4])
 #r = []
  #   r.append(row)
  #   r = np.array(r)   
