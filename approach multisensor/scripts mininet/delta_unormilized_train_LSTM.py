@@ -30,22 +30,15 @@ def create_dataset(X, y, time_steps=1):
     start = timer()
     Xs, ys = [], []    
     for i in range(len(X) - time_steps):
-        rx = []
         clear_output(wait=True)
         print('modeling to keras ',round((i/(len(X) - time_steps))*100,2), ('%'), end='')
         s = round(timer() - start)
         if(s>60):
             s /=60
             print(' ', s, ' seconds')
-        v = X.iloc[i: (i+time_steps), 0].to_numpy()
-        #s = X.iloc[i: (i+time_steps), 1].to_numpy()
-        deltaTemp = np.mean(v)        
-        #label = np.mean(s)
-        rx.append([deltaTemp])
-        Xs.append(rx)
-        
-        delay = np.mean(y.iloc[i+time_steps])
-        ys.append(delay)
+        v = X.iloc[i: (i+time_steps), 2:3].to_numpy()
+        Xs.append(v)
+        ys.append(y.iloc[i+time_steps])
     return np.array(Xs), np.array(ys)
 
 #train functions
@@ -83,7 +76,7 @@ def LSTMfit():
     train_size = int(len(df) * 0.8)
     train, test = df.iloc[0:train_size], df.iloc[train_size:len(df)]
     
-    X_train,Y_train = create_dataset(train, train.delay, time_steps=35)
+    X_train,Y_train = create_dataset(train, train.delay)
     model = LSTMconf(X_train)
         
     print('Init Train')
@@ -97,7 +90,7 @@ def LSTMfit():
 
     
     print('Saving Model')
-    model.save('lstm')
+    model.save('lstm.h5')
     
     predict(test, model)
 
@@ -110,7 +103,7 @@ def predict(test=None, model=None):
          train, test = df.iloc[0:train_size], df.iloc[train_size:len(df)]
          
     if model is None:
-        model = keras.models.load_model('lstm')
+        model = keras.models.load_model('lstm.h5')
    
     X_test,Y_test = create_dataset(test, test.delay)
     
